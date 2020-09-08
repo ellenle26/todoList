@@ -1,0 +1,6 @@
+.item * {
+  margin: 5px;
+}
+.item {
+  list-style: none;
+}
