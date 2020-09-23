@@ -1,59 +1,68 @@
 let taskList = [];
-
-// Get the input field
-var input = document.getElementById("task");
+let uniqueId = 0;
 
 const addTodo = () => {
   let input = document.getElementById("task").value;
-  if (input == "" || input == " ") {
+
+  if (input == null || input == "") {
     alert("invalid task");
   } else {
-    taskList.push({ taskName: input, isDone: false });
+    taskList.push({ taskName: input, isDone: false, taskID: uniqueId++ });
   }
   console.log(taskList);
-  render();
+  render(taskList);
+  saveData();
 };
 
-let render = () => {
-  let result = taskList
-    .map(
-      (item, index) =>
-        `<div class="item">
-        <input id="checkBox" type="checkbox" onclick="check(${index})"/>
-        <span id="${index}">${item.taskName}</span>
-        <button id="removeBttn" onclick="remove(${index})">x</button>
-        </div>`
-    )
+const showAll = () => {
+  render(taskList);
+  saveData();
+};
+
+const showDone = () => {
+  let doneList = taskList.filter((item) => item.isDone);
+  render(doneList);
+  saveData();
+};
+
+const showPending = () => {
+  let pendingList = taskList.filter((item) => !item.isDone);
+  render(pendingList);
+  saveData();
+};
+
+let render = (list) => {
+  let result = list
+    .map((item) => {
+      if (item.isDone) {
+        return `<div class="item">
+        <input  type="checkbox" checked onchange="check(${item.taskID})"/>
+        <span style="text-decoration: line-through">${item.taskName}</span>
+        <button id="removeBttn" onclick="remove(${item.taskID})">x</button>
+        </div>`;
+      } else
+        return `<div class="item">
+        <input type="checkbox" onchange="check(${item.taskID})"/>
+        <span >${item.taskName}</span>
+        <button id="removeBttn" onclick="remove(${item.taskID})">x</button>
+        </div>`;
+    })
     .join("");
   document.getElementById("taskArea").innerHTML = result;
-  return;
+  saveData();
 };
 
-let remove = (index) => {
-  taskList.splice(index, 1);
-  render();
-  for (let i = 0; i < taskList.length; i++) {
-    if (taskList[i].isDone) {
-      document.getElementById("checkBox").checked = true;
-      document.getElementById(i).style.textDecoration = "line-through";
-      return;
-    } else {
-      document.getElementById("checkBox").checked = false;
-      document.getElementById(i).style.textDecoration = "none";
-      return;
-    }
-  }
+let remove = (clickedIndex) => {
+  let id = taskList.findIndex((item) => item.taskID == clickedIndex);
+  taskList.splice(id, 1);
+  render(taskList);
+  console.log("list afet delet", taskList);
 };
 
-let check = (index) => {
-  taskList[index].isDone = !taskList[index].isDone;
-  if (taskList[index].isDone) {
-    document.getElementById(index).style.textDecoration = "line-through";
-    return;
-  } else {
-    document.getElementById(index).style.textDecoration = "none";
-    return;
-  }
+let check = (clickedIndex) => {
+  let id = taskList.findIndex((item) => item.taskID === clickedIndex);
+  taskList[id].isDone = !taskList[id].isDone;
+  render(taskList);
 };
 
 // month
@@ -76,8 +85,24 @@ document.getElementById("month").innerHTML = months[
   d.getMonth()
 ].toLocaleUpperCase();
 // date
-var d = new Date();
 document.getElementById("date").innerHTML = d.getDate();
 // year
-var d = new Date();
 document.getElementById("year").innerHTML = d.getFullYear();
+
+const saveData = () => {
+  localStorage.setItem("taskList", JSON.stringify(taskList));
+};
+
+const getData = () => {
+  let data = localStorage.getItem("taskList");
+  data = JSON.parse(data);
+  if (data == null) {
+    taskList = [];
+  } else {
+    taskList = data;
+  }
+  render(taskList);
+  console.log(taskList);
+};
+
+getData();

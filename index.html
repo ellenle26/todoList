@@ -22,13 +22,18 @@
           <div id="year"></div>
         </div>
         <div class="taskSection">
-          <input
-            id="task"
-            type="text"
-            onfocus="this.value=''"
-            autocomplete="off"
-          />
-          <button id="addTask" onclick="addTodo()">Add</button>
+          <div class="inputSection">
+            <input
+              id="task"
+              type="text"
+              onfocus="this.value=''"
+              autocomplete="off"
+            />
+            <button id="addTask" onclick="addTodo()">Add</button>
+            <button id="addTask" onclick="showAll()">All</button>
+            <button id="addTask" onclick="showDone()">Done</button>
+            <button id="addTask" onclick="showPending()">Pending</button>
+          </div>
           <div id="taskArea" class="scrollArea"></div>
           <div id="test"></div>
         </div>

@@ -104,8 +104,14 @@ div.scrollArea {
   width: 400px;
 }
 
+.inputSection {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 #task {
-  width: 80%;
+  width: 40%;
   height: 30px;
   border-radius: 10px;
   padding: 0 10px;
